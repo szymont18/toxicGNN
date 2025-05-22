@@ -3,16 +3,9 @@ from smiles.SmilesConverter import SmileConverter
 from dask.distributed import Client
 import time
 
-def main():
-    client = Client()
 
-    file_path = '../data/tox21-ache-p3.txt'
-
-    df = dd.read_csv(file_path, index_col=False, sep='\t', dtype={'PUBCHEM_CID': 'float64'})
+def convert_to_smiles(df):
     n = len(df)
-
-    df = df.repartition(npartitions=8)
-
     converter = SmileConverter()
 
     df["SMILES"] = df["SMILES"].str.upper()
@@ -25,6 +18,18 @@ def main():
 
     print(f"Parsed Smiles: {len(result)} / {n}")
     print(f"Time: {end - start}")
+
+    return result
+
+def main():
+    client = Client()
+
+    file_path = '../data/tox21-ache-p3.txt'
+
+    df = dd.read_csv(file_path, index_col=False, sep='\t', dtype={'PUBCHEM_CID': 'float64'})
+    df = df.repartition(npartitions=8)
+
+    convert_to_smiles(df)
 
     client.close()
 

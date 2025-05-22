@@ -17,7 +17,7 @@ class SmileConverter:
 
         # Node feature extraction:
         # In the feature we can add some features from dataset to each node (like mass, ...)
-        atom_features = [i for i in range(len(graph.nodes))]
+        atom_features = [[i] for i in range(len(graph.nodes))]
 
         x = torch.tensor(atom_features, dtype=torch.float)
 
