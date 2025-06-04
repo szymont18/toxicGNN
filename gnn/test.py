@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__),'../'))
+
 from SimpleGNN import SimpleGNN
 from smiles.SmilesConvertJob import convert_to_smiles
 import dask.dataframe as dd
@@ -7,10 +11,11 @@ from torch_geometric.loader import DataLoader
 from smiles.SmilesDataset import SmilesDataset
 from sklearn.model_selection import train_test_split
 import torch
-
+from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
+import numpy as np
 
 def preprocessing():
-    file_path = '../data/tox21-ache-p3.aggregrated.txt'
+    file_path = './data/tox21-ache-p3.aggregrated.txt'
 
     # client = Client()
 
@@ -78,6 +83,41 @@ def train(model, train_loader, optimizer, criterion, device):
     return avg_loss, accuracy
 
 
+def test(model, test_loader, criterion, device):
+    model.eval()
+    
+    total_loss = 0
+    all_preds = []
+    all_labels = []
+    
+    with torch.no_grad():
+        for data, labels in test_loader:
+            data = data.to(device)
+            labels = labels.to(device)
+            
+            out = model(data)
+            loss = criterion(out, labels)
+            
+            total_loss += loss.item() * data.num_graphs
+            
+            preds = out.argmax(dim=1)
+            all_preds.extend(preds.cpu().numpy())
+            all_labels.extend(labels.cpu().numpy())
+    
+    all_preds = np.array(all_preds)
+    all_labels = np.array(all_labels)
+    
+    # Calculate metrics
+    f1 = f1_score(all_labels, all_preds, average='weighted', zero_division=0)
+    accuracy = accuracy_score(all_labels, all_preds)
+    precision = precision_score(all_labels, all_preds, average='weighted', zero_division=0)
+    recall = recall_score(all_labels, all_preds, average='weighted', zero_division=0)
+    
+    avg_loss = total_loss / len(test_loader.dataset)
+    
+    return avg_loss, accuracy, f1, precision, recall
+
+
 def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     train_loader, test_loader, n_classes = preprocessing()
@@ -87,9 +127,47 @@ def main():
     criterion = torch.nn.CrossEntropyLoss()
 
     num_epochs = 20
+    best_f1 = 0
+    best_acc = 0
+    best_precision = 0
+    best_recall = 0
+    best_model_state = None
+    best_optimizer_state = None
+    best_epoch = 0
+    
     for epoch in range(num_epochs):
-        loss, acc = train(model, train_loader, optimizer, criterion, device)
-        print(f"Epoch {epoch + 1}/{num_epochs} - Loss: {loss:.4f}, Accuracy: {acc:.4f}")
+        # Training
+        train_loss, train_acc = train(model, train_loader, optimizer, criterion, device)
+        print(f"Epoch {epoch + 1}/{num_epochs}")
+        print(f"Train - Loss: {train_loss:.4f}, Accuracy: {train_acc:.4f}")
+        
+        # Testing
+        test_loss, test_acc, test_f1, test_precision, test_recall = test(model, test_loader, criterion, device)
+        print(f"Test - Loss: {test_loss:.4f}, Accuracy: {test_acc:.4f}")
+        print(f"F1 Score: {test_f1:.4f}, Precision: {test_precision:.4f}, Recall: {test_recall:.4f}")
+        
+        if test_f1 > best_f1:
+            best_f1 = test_f1
+            best_acc = test_acc
+            best_precision = test_precision
+            best_recall = test_recall
+            best_model_state = model.state_dict().copy()
+            best_optimizer_state = optimizer.state_dict().copy()
+            best_epoch = epoch
+    
+    if best_model_state is not None:
+        torch.save({
+            'epoch': best_epoch,
+            'model_state_dict': best_model_state,
+            'optimizer_state_dict': best_optimizer_state,
+            'f1_score': best_f1,
+        }, 'best_model.pth')
+    
+    print(f"Best model from epoch {best_epoch + 1} with:")
+    print(f"F1 Score: {best_f1:.4f}")
+    print(f"Accuracy: {best_acc:.4f}")
+    print(f"Precision: {best_precision:.4f}")
+    print(f"Recall: {best_recall:.4f}")
 
 
 if __name__ == '__main__':

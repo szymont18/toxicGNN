@@ -24,7 +24,7 @@ def convert_to_smiles(df):
 def main():
     client = Client()
 
-    file_path = '../data/tox21-ache-p3.txt'
+    file_path = './data/tox21-ache-p3.txt'
 
     df = dd.read_csv(file_path, index_col=False, sep='\t', dtype={'PUBCHEM_CID': 'float64'})
     df = df.repartition(npartitions=8)
