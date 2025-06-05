@@ -13,14 +13,23 @@ from sklearn.model_selection import train_test_split
 import torch
 from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
 import numpy as np
+from collections import Counter
+from sklearn.metrics import classification_report
+from sklearn.utils.class_weight import compute_class_weight
+from imblearn.over_sampling import RandomOverSampler
+
+
 
 def preprocessing():
-    file_path = './data/tox21-ache-p3.aggregrated.txt'
+    # file_path = './data/tox21-ache-p3.aggregrated.txt'
+    # file_path = './data/tox21-ap1-agonist-p1.txt'
+    file_path = './data/tox21-ap1-agonist-p1.aggregrated.txt'
 
     # client = Client()
 
     df = dd.read_csv(file_path, index_col=False, sep='\t', dtype={'FLAG': 'object',
-                                                                  'PUBCHEM_CID': 'float64'})
+                                                                  'PUBCHEM_CID': 'float64',
+                                                                  'PURITY_RATING_4M': 'object'})
 
     df = df.repartition(npartitions=8)
 
@@ -42,6 +51,8 @@ def preprocessing():
         random_state=42,
         stratify=y
     )
+    
+    print("Label distribution:", Counter(y))
 
     train_dataset = SmilesDataset(X_train, y_train)
     test_dataset = SmilesDataset(X_test, y_test)
@@ -50,7 +61,21 @@ def preprocessing():
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
     # client.close()
-    return train_loader, test_loader, len(unique_labels)
+    label_counts = Counter(y)
+    total = sum(label_counts.values())
+    num_classes = len(label_counts)
+
+    class_weights = compute_class_weight(
+        class_weight='balanced',
+        classes=np.unique(y),
+        y=y
+    )
+
+    class_weights = torch.tensor(class_weights, dtype=torch.float)
+
+
+    return train_loader, test_loader, num_classes, class_weights
+
 
 
 def train(model, train_loader, optimizer, criterion, device):
@@ -107,6 +132,8 @@ def test(model, test_loader, criterion, device):
     all_preds = np.array(all_preds)
     all_labels = np.array(all_labels)
     
+    # print(classification_report(all_labels, all_preds, digits=4))
+
     # Calculate metrics
     f1 = f1_score(all_labels, all_preds, average='weighted', zero_division=0)
     accuracy = accuracy_score(all_labels, all_preds)
@@ -120,11 +147,14 @@ def test(model, test_loader, criterion, device):
 
 def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    train_loader, test_loader, n_classes = preprocessing()
+    train_loader, test_loader, n_classes, class_weights = preprocessing()
+    
+    print(f"Class weights: {class_weights}")
 
     model = SimpleGNN(input_dim=1, hidden_dim=64, output_dim=64, num_classes=n_classes).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-    criterion = torch.nn.CrossEntropyLoss()
+    criterion = torch.nn.CrossEntropyLoss(weight=class_weights.to(device))
+
 
     num_epochs = 20
     best_f1 = 0
