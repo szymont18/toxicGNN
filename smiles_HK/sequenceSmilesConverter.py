@@ -122,6 +122,12 @@ def main_sequential():
 
     processing_end_time = time.time()
     
+    # --- Zapisywanie wyników ---
+    print(f"\nZapisywanie {len(all_graphs)} grafów do pliku {OUTPUT_FILE}...")
+    saving_start_time = time.time()
+    torch.save({'graphs': all_graphs, 'labels': torch.tensor(all_labels, dtype=torch.long)}, OUTPUT_FILE)
+    saving_end_time = time.time()
+    
     # --- Podsumowanie ---
     print("\n" + "=" * 40)
     print("--- ZAKOŃCZONO PRZETWARZANIE SEKWENCYJNE ---")
@@ -131,6 +137,7 @@ def main_sequential():
     print("\n--- PODSUMOWANIE CZASÓW ---")
     print(f"Czas wczytywania danych: {loading_end_time - loading_start_time:.2f} s")
     print(f"Czas przetwarzania (konwersja SMILES): {processing_end_time - processing_start_time:.2f} s")
+    print(f"Czas zapisu do pliku: {saving_end_time - saving_start_time:.2f} s")
     total_script_end_time = time.time()
     print("-" * 20)
     print(f"CAŁKOWITY CZAS WYKONANIA SKRYPTU: {total_script_end_time - total_script_start_time:.2f} s")
