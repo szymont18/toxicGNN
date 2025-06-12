@@ -63,9 +63,12 @@ def main_sequential():
     total_script_start_time = time.time()
 
     # --- Konfiguracja ---
-    INPUT_FILE = "./data/tox21-ap1-agonist-p1.txt"
-    OUTPUT_DIR = "./processed_data_sequential"
-    OUTPUT_FILE = os.path.join(OUTPUT_DIR, "processed_data.pt")
+    # INPUT_FILE = "./data/tox21-ap1-agonist-p1.txt"
+    # OUTPUT_DIR = "./processed_data_sequential"
+    INPUT_FILE = os.path.expandvars("$SCRATCH/huge_tox21-ap1-agonist-p16.txt")
+    # INPUT_FILE = os.path.expandvars("$SCRATCH/test.txt")
+    OUTPUT_DIR = os.path.expandvars("$SCRATCH/processed_data6")
+    OUTPUT_FILE = os.path.join(OUTPUT_DIR, "processed_data6.pt")
     LABEL_COLUMN = "ASSAY_OUTCOME"
     SMILES_COLUMN = "SMILES"
 
