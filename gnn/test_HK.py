@@ -58,8 +58,8 @@ def convert_and_cache_smiles(files, cache_dir="./cached_data", force_reprocess=F
 
         if os.path.exists(graph_file) and os.path.exists(label_file) and not force_reprocess:
             print(f"Loading cached data: {file_name}")
-            graphs = torch.load(graph_file)
-            labels = torch.load(label_file)
+            graphs = torch.load(graph_file, weights_only=False)
+            labels = torch.load(label_file, weights_only=False)
         else:
             print(f"Processing and caching data: {file_name}")
             df = pd.read_csv(file_path, sep="\t", index_col=False)
@@ -91,7 +91,7 @@ def preprocessing(file_paths, test_size=0.2, batch_size=32, cache_dir="./cached_
     creates data loaders, and computes class weights for handling imbalance.
     """
     graphs, labels = convert_and_cache_smiles(
-        file_paths, cache_dir=cache_dir, force_reprocess=True # Set to False to use cache
+        file_paths, cache_dir=cache_dir, force_reprocess=False # Set to False to use cache
     )
 
     print("Label distribution:", Counter(labels))

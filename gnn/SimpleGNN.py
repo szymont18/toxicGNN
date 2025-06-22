@@ -14,7 +14,7 @@ class SimpleGNN(torch.nn.Module):
         x, edge_index, batch = data.x, data.edge_index, data.batch
         x = self.layer1(x, edge_index)
         x = F.relu(x)
-        x = F.dropout(x, p=0.5, training=self.training)
+        x = F.dropout(x, p=0.05, training=self.training)
         x = self.layer2(x, edge_index)
         x = F.relu(x)
 
