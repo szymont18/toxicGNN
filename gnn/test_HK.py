@@ -94,7 +94,7 @@ def convert_and_cache_smiles(files, cache_dir="./cached_data", force_reprocess=F
 
 def preprocessing(file_paths, test_size=0.2, batch_size=32, cache_dir="./cached_data"):
     graphs, labels = convert_and_cache_smiles(
-        file_paths, cache_dir=cache_dir, force_reprocess=False
+        file_paths, cache_dir=cache_dir, force_reprocess=True
     )
 
     print("Label distribution:", Counter(labels))
@@ -170,7 +170,8 @@ def test(model, test_loader, criterion, device):
 
 
 def count_assay_outcome(file_path):
-    df = pd.read_csv(file_path, sep="\t")
+    df = pd.read_csv(file_path, sep="\t", index_col=False)
+    print(df.head)
     df.columns = df.columns.str.strip()
     counts = df["ASSAY_OUTCOME"].value_counts(dropna=False)
     print(f"Distribution at ASSAY_OUTCOME in {file_path}:")
