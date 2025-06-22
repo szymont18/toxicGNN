@@ -166,7 +166,7 @@ def count_assay_outcome(file_path):
     """
     Utility function to print the distribution of assay outcomes in a file.
     """
-    df = pd.read_csv(file_path, sep="\t")
+    df = pd.read_csv(file_path, sep="\t", index_col=False)
     df.columns = df.columns.str.strip()
     counts = df["ASSAY_OUTCOME"].value_counts(dropna=False)
     print(f"Distribution of ASSAY_OUTCOME in {os.path.basename(file_path)}:")
