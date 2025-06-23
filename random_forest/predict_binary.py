@@ -8,12 +8,11 @@ class ToxicRandomForest:
     A wrapper for the scikit-learn RandomForestClassifier.
     This class definition is needed for joblib to correctly load the model object.
     """
-    def __init__(self, n_estimators=100, max_depth=None, random_state=42):
+    def __init__(self, n_estimators=100, max_depth=None):
         from sklearn.ensemble import RandomForestClassifier
         self.model = RandomForestClassifier(
             n_estimators=n_estimators,
             max_depth=max_depth,
-            random_state=random_state,
             n_jobs=-1
         )
 

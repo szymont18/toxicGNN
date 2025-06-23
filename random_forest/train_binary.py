@@ -66,7 +66,6 @@ def preprocessing(file_paths, test_size=0.2):
     X_train_smiles, X_test_smiles, y_train, y_test = train_test_split(
         X, y,
         test_size=test_size,
-        random_state=42,
         stratify=y
     )
 
@@ -93,11 +92,10 @@ def train_and_evaluate(model, X_train, X_test, y_train, y_test):
 
 class ToxicRandomForest:
     """A wrapper for the scikit-learn RandomForestClassifier."""
-    def __init__(self, n_estimators=100, max_depth=None, random_state=42):
+    def __init__(self, n_estimators=100, max_depth=None):
         self.model = RandomForestClassifier(
             n_estimators=n_estimators,
             max_depth=max_depth,
-            random_state=random_state,
             n_jobs=-1
         )
 
@@ -122,7 +120,7 @@ def main():
 
     X_train, X_test, y_train, y_test = preprocessing(file_paths)
 
-    model = ToxicRandomForest(n_estimators=100, random_state=42)
+    model = ToxicRandomForest(n_estimators=100)
     
     accuracy, f1, precision, recall = train_and_evaluate(model, X_train, X_test, y_train, y_test)
     

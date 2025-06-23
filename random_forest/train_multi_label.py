@@ -64,7 +64,6 @@ def preprocessing(file_path):
     X_train_smiles, X_test_smiles, y_train, y_test = train_test_split(
         X, y,
         test_size=0.2,
-        random_state=42
     )
 
     print("Converting SMILES to Morgan fingerprints for training set...")
@@ -103,7 +102,7 @@ def main():
 
     X_train, X_test, y_train, y_test, label_columns = preprocessing(file_path)
 
-    model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1)
+    model = RandomForestClassifier(n_estimators=100, n_jobs=-1)
     
     train_and_evaluate(model, X_train, X_test, y_train, y_test, label_columns)
     

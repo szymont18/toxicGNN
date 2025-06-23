@@ -134,7 +134,7 @@ def preprocessing(file_paths, test_size=0.2, batch_size=32, cache_dir="./cached_
     print("Label distribution:", Counter(labels))
 
     X_train, X_test, y_train, y_test = train_test_split(
-        graphs, labels, test_size=test_size, random_state=42, stratify=labels
+        graphs, labels, test_size=test_size, stratify=labels
     )
 
     train_dataset = SmilesDataset(X_train, y_train)

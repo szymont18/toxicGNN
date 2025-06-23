@@ -248,7 +248,7 @@ def preprocessing(file_path, test_size=0.2, batch_size=64, cache_dir="./cached_d
 
 
     X_train, X_test, y_train, y_test = train_test_split(
-        graphs, labels_tensor, test_size=test_size, random_state=42
+        graphs, labels_tensor, test_size=test_size
     )
 
     train_dataset = SmilesDataset(X_train, y_train)

@@ -69,7 +69,7 @@ def preprocessing(file_path, nBits=2048):
     df[smiles_col] = df[smiles_col].str.strip()
     X = df[smiles_col].tolist()
     y = df[label_columns].values.astype(int)
-    X_train_smiles, X_test_smiles, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train_smiles, X_test_smiles, y_train, y_test = train_test_split(X, y, test_size=0.2)
     print("Converting SMILES to Morgan fingerprints...")
     X_train = smiles_to_fingerprint(X_train_smiles, nBits=nBits)
     X_test = smiles_to_fingerprint(X_test_smiles, nBits=nBits)

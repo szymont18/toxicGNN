@@ -2,11 +2,10 @@ from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 
 class ToxicRandomForest:
-    def __init__(self, n_estimators=100, max_depth=None, random_state=42):
+    def __init__(self, n_estimators=100, max_depth=None):
         self.model = RandomForestClassifier(
             n_estimators=n_estimators,
             max_depth=max_depth,
-            random_state=random_state,
             n_jobs=-1,  # Use all available cores
             class_weight='balanced'  # Handle class imbalance
         )
