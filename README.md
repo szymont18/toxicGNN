@@ -1,2 +1,3 @@
-# toxicGNN
-For now it is tested on tox21-ache-p3 from [link](https://tripod.nih.gov/pubdata/?fbclid=IwY2xjawKb4aJleHRuA2FlbQIxMQABHmmg3AGAnSpDaJJyQt9S5hYDYVRRhmjvDg8rQqFEyIHi03WlSQlLOL4j54B1_aem_qlRm6MFGAUwLdcdaRJUU4w)
+# toxicGNN - Toxicity Prediction with Graph Neural Networks, Random Forests and ANNs
+
+Authors: Patryk Klatka, Szymon Twardosz, Hieronim Koc
