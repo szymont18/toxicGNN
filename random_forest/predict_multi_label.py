@@ -21,7 +21,7 @@ def smiles_to_fingerprint(smiles_list, radius=2, nBits=2048):
     return np.array(fingerprints)
 
 
-def predict_toxicity_profile(smiles_string, model_path="rf_multilabel_model.joblib"):
+def predict_toxicity_profile(smiles_string, model_path="./models/rf_multilabel_model.joblib"):
     """
     Loads a pre-trained multi-label RandomForest model and predicts the toxicity
     profile for a given SMILES string.

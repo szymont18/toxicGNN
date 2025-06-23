@@ -1,6 +1,6 @@
-rf_multilabel_model.joblib filter=lfs diff=lfs merge=lfs -text
-ann_multilabel_model.pth filter=lfs diff=lfs merge=lfs -text
-best_model_gnn_binary.pth filter=lfs diff=lfs merge=lfs -text
-best_multilabel_model_gnn.pth filter=lfs diff=lfs merge=lfs -text
-toxic_ann_model.pth filter=lfs diff=lfs merge=lfs -text
-toxic_random_forest_model.joblib filter=lfs diff=lfs merge=lfs -text
+models/best_model_gnn_binary.pth filter=lfs diff=lfs merge=lfs -text
+models/best_multilabel_model_gnn.pth filter=lfs diff=lfs merge=lfs -text
+models/rf_multilabel_model.joblib filter=lfs diff=lfs merge=lfs -text
+models/toxic_ann_model.pth filter=lfs diff=lfs merge=lfs -text
+models/toxic_random_forest_model.joblib filter=lfs diff=lfs merge=lfs -text
+models/ann_multilabel_model.pth filter=lfs diff=lfs merge=lfs -text

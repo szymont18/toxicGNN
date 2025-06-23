@@ -3,8 +3,6 @@ import joblib
 from rdkit import Chem
 from rdkit.Chem import rdFingerprintGenerator
 
-# --- Replicating necessary components from the training script ---
-
 class ToxicRandomForest:
     """
     A wrapper for the scikit-learn RandomForestClassifier.
@@ -50,7 +48,7 @@ def smiles_to_fingerprint(smiles_list, radius=2, nBits=2048):
     return np.array(fingerprints)
 
 
-def predict_toxicity(smiles_string, model_path="toxic_random_forest_model.joblib"):
+def predict_toxicity(smiles_string, model_path="./models/toxic_random_forest_model.joblib"):
     """
     Loads a pre-trained RandomForest model and predicts the toxicity of a
     given SMILES string.

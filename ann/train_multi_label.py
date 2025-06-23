@@ -115,7 +115,7 @@ def train_and_evaluate(model, X_train, X_test, y_train, y_test, label_columns, e
 
 def main():
     """Main function to run the training, evaluation, and model saving pipeline."""
-    file_path = "./gnn/tox21_summary.csv"
+    file_path = "./data/tox21_summary.csv"
     if not os.path.exists(file_path):
         print(f"Error: Data file not found at '{file_path}'.")
         return
@@ -140,8 +140,7 @@ def main():
     # --- Training and Evaluation ---
     train_and_evaluate(model, X_train, X_test, y_train, y_test, label_columns, epochs=EPOCHS, batch_size=BATCH_SIZE, learning_rate=LEARNING_RATE)
 
-    # --- ADDED: Save the trained model's state and label columns ---
-    model_filename = "ann_multilabel_model.pth"
+    model_filename = "./models/ann_multilabel_model.pth"
     print(f"\nSaving trained model and labels to {model_filename}...")
     torch.save({
         'model_state_dict': model.state_dict(),
@@ -152,7 +151,6 @@ def main():
         'dropout_rate': DROPOUT_RATE
     }, model_filename)
     print("Model saved successfully.")
-    # --- END ADDITION ---
 
 if __name__ == '__main__':
     main()

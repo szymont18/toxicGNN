@@ -12,7 +12,6 @@ from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_sc
 from rdkit import Chem
 from rdkit.Chem import rdFingerprintGenerator
 
-# --- PyTorch Model Definition ---
 class ANNModel(nn.Module):
     """A simple multi-layer perceptron for binary classification."""
     def __init__(self, input_dim, hidden_dim1, hidden_dim2, dropout_rate=0.5):
@@ -158,10 +157,9 @@ def train_and_evaluate(model, X_train, X_test, y_train, y_test):
 
 def main():
     """Main function to run the training and evaluation pipeline."""
-    # (Dummy file creation code is omitted for brevity but would be here)
     file_paths = [
-        "./smiles_HK/data/tox21-ache-p3.aggregrated.txt",
-        "./smiles_HK/data/tox21-ap1-agonist-p1.aggregrated.txt",
+        "./data/tox21-ache-p3.aggregrated.txt",
+        "./data/tox21-ap1-agonist-p1.aggregrated.txt",
     ]
 
     X_train, X_test, y_train, y_test = preprocessing(file_paths)
@@ -177,12 +175,10 @@ def main():
     print(f"Precision: {precision:.4f}")
     print(f"Recall: {recall:.4f}")
     
-    # --- ADDED: Save the trained model's state dictionary ---
-    model_filename = "toxic_ann_model.pth"
+    model_filename = "./models/toxic_ann_model.pth"
     print(f"\nSaving trained model state to {model_filename}...")
     torch.save(model.model.state_dict(), model_filename)
     print("Model state saved successfully.")
-    # --- END ADDITION ---
 
 if __name__ == '__main__':
     main()

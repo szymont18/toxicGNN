@@ -318,16 +318,12 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    # --- Configuration ---
-    # --- MODIFICATION: Instruct user to place their specific data file here ---
     # IMPORTANT: Change this to the path of your CSV file.
-    file_path = "./gnn/tox21_summary.csv" 
+    file_path = "./data/tox21_summary.csv" 
     num_epochs = 100
     patience_epochs = 100 # For early stopping
     learning_rate = 0.001
-    # --- End Configuration ---
 
-    # --- MODIFICATION: Removed automatic downloader and added a more specific file check ---
     if not os.path.exists(file_path):
         print(f"Error: Data file not found at '{file_path}'.")
         print("Please ensure your data file is at the correct location and the 'file_path' variable is set correctly.")
@@ -382,7 +378,7 @@ def main():
     print(f"\nTotal Training Time: {total_training_time:.2f} seconds")
 
     if best_state:
-        torch.save(best_state, "best_multilabel_model_gnn.pth")
+        torch.save(best_state, "./models/best_multilabel_model_gnn.pth")
         print(f"\nTraining complete. Saved best model from epoch {best_state['epoch']+1} (F1 Score: {best_f1:.4f}) to 'best_multilabel_model_gnn.pth'")
     else:
         print("\nTraining complete. No model was saved as no improvement was seen.")

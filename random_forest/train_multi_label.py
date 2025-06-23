@@ -95,7 +95,7 @@ def train_and_evaluate(model, X_train, X_test, y_train, y_test, label_columns):
 
 def main():
     """Main function to run the training and evaluation pipeline."""
-    file_path = "./gnn/tox21_summary.csv" 
+    file_path = "./data/tox21_summary.csv" 
     if not os.path.exists(file_path):
         print(f"Error: Data file not found at '{file_path}'.")
         print("Please ensure your data file is at the correct location.")
@@ -107,16 +107,14 @@ def main():
     
     train_and_evaluate(model, X_train, X_test, y_train, y_test, label_columns)
     
-    # --- ADDED: Save the trained model and the label columns ---
     saved_model_data = {
         'model': model,
         'label_columns': label_columns
     }
-    model_filename = "rf_multilabel_model.joblib"
+    model_filename = "./models/rf_multilabel_model.joblib"
     print(f"\nSaving trained model and labels to {model_filename}...")
     joblib.dump(saved_model_data, model_filename)
     print("Model saved successfully.")
-    # --- END ADDITION ---
 
 if __name__ == '__main__':
     main()

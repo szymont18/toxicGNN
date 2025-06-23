@@ -4,8 +4,6 @@ import torch.nn as nn
 from rdkit import Chem
 from rdkit.Chem import rdFingerprintGenerator
 
-# --- Replicating necessary components from the training script ---
-
 class ANNModel(nn.Module):
     """
     This architecture MUST MATCH the one used for training.
@@ -45,7 +43,7 @@ def smiles_to_fingerprint(smiles_list, nBits=2048):
             fingerprints.append(np.zeros(nBits, dtype=int))
     return np.array(fingerprints)
 
-def predict_toxicity_profile(smiles_string, model_path="ann_multilabel_model.pth"):
+def predict_toxicity_profile(smiles_string, model_path="./models/ann_multilabel_model.pth"):
     """
     Loads a pre-trained multi-label ANN model and predicts the toxicity
     profile for a given SMILES string.

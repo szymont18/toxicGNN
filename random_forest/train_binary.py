@@ -116,8 +116,8 @@ class ToxicRandomForest:
 def main():
     """Main function to run the training, evaluation, and model saving pipeline."""
     file_paths = [
-        "./smiles_HK/data/tox21-ache-p3.aggregrated.txt",
-        "./smiles_HK/data/tox21-ap1-agonist-p1.aggregrated.txt",
+        "./data/tox21-ache-p3.aggregrated.txt",
+        "./data/tox21-ap1-agonist-p1.aggregrated.txt",
     ]
 
     X_train, X_test, y_train, y_test = preprocessing(file_paths)
@@ -132,12 +132,10 @@ def main():
     print(f"Precision: {precision:.4f}")
     print(f"Recall: {recall:.4f}")
     
-    # --- ADDED: Save the trained model ---
-    model_filename = "toxic_random_forest_model.joblib"
+    model_filename = "./models/toxic_random_forest_model.joblib"
     print(f"\nSaving trained model to {model_filename}...")
     joblib.dump(model, model_filename)
     print("Model saved successfully.")
-    # --- END ADDITION ---
 
 if __name__ == '__main__':
     main()

@@ -4,8 +4,6 @@ import torch.nn as nn
 from rdkit import Chem
 from rdkit.Chem import rdFingerprintGenerator
 
-# --- Replicating necessary components from the training script ---
-
 class ANNModel(nn.Module):
     """
     A simple multi-layer perceptron for binary classification.
@@ -49,7 +47,7 @@ def smiles_to_fingerprint(smiles_list, radius=2, nBits=2048):
             fingerprints.append(np.zeros(nBits, dtype=int))
     return np.array(fingerprints)
 
-def predict_toxicity(smiles_string, model_path="toxic_ann_model.pth", nBits=2048):
+def predict_toxicity(smiles_string, model_path="./models/toxic_ann_model.pth", nBits=2048):
     """
     Loads a pre-trained PyTorch ANN model and predicts the toxicity of a
     given SMILES string.
