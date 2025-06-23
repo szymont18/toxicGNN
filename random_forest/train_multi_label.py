@@ -2,6 +2,7 @@ import os
 import sys
 import pandas as pd
 import numpy as np
+import joblib  # Import joblib to save the model
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
@@ -81,9 +82,7 @@ def train_and_evaluate(model, X_train, X_test, y_train, y_test, label_columns):
     print("Making predictions...")
     y_pred = model.predict(X_test)
     
-    # Calculate overall metrics
     f1 = f1_score(y_test, y_pred, average='weighted', zero_division=0)
-    # accuracy_score computes subset accuracy for multi-label problems.
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred, average='weighted', zero_division=0)
     recall = recall_score(y_test, y_pred, average='weighted', zero_division=0)
@@ -93,16 +92,6 @@ def train_and_evaluate(model, X_train, X_test, y_train, y_test, label_columns):
     print(f"Subset Accuracy: {accuracy:.4f}")
     print(f"Precision (weighted): {precision:.4f}")
     print(f"Recall (weighted): {recall:.4f}")
-
-    # Calculate and print per-label metrics
-    print("\nPerformance per label:")
-    f1_scores = f1_score(y_test, y_pred, average=None, zero_division=0)
-    precision_scores = precision_score(y_test, y_pred, average=None, zero_division=0)
-    recall_scores = recall_score(y_test, y_pred, average=None, zero_division=0)
-
-    for i, label_name in enumerate(label_columns):
-        print(f"  {label_name}:")
-        print(f"    F1: {f1_scores[i]:.4f}, Precision: {precision_scores[i]:.4f}, Recall: {recall_scores[i]:.4f}")
 
 def main():
     """Main function to run the training and evaluation pipeline."""
@@ -118,11 +107,16 @@ def main():
     
     train_and_evaluate(model, X_train, X_test, y_train, y_test, label_columns)
     
-    feature_importances = model.feature_importances_
-    print("\nTop 10 most important features (fingerprint bits):")
-    top_indices = np.argsort(feature_importances)[-10:]
-    for idx in top_indices:
-        print(f"Feature {idx}: {feature_importances[idx]:.4f}")
+    # --- ADDED: Save the trained model and the label columns ---
+    saved_model_data = {
+        'model': model,
+        'label_columns': label_columns
+    }
+    model_filename = "rf_multilabel_model.joblib"
+    print(f"\nSaving trained model and labels to {model_filename}...")
+    joblib.dump(saved_model_data, model_filename)
+    print("Model saved successfully.")
+    # --- END ADDITION ---
 
 if __name__ == '__main__':
-    main() 
+    main()

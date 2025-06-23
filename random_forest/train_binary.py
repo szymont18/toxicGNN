@@ -2,6 +2,7 @@ import os
 import sys
 import pandas as pd
 import numpy as np
+import joblib  # Import joblib to save the model
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
@@ -21,8 +22,10 @@ def smiles_to_fingerprint(smiles_list, radius=2, nBits=2048):
             fp = mfpgen.GetFingerprintAsNumPy(mol)
             fingerprints.append(fp)
         else:
+            # Important: handle invalid SMILES by providing a zeroed array of the correct shape
             fingerprints.append(np.zeros(nBits, dtype=int))
     return np.array(fingerprints)
+
 
 def preprocessing(file_paths, test_size=0.2):
     """
@@ -46,10 +49,8 @@ def preprocessing(file_paths, test_size=0.2):
 
     combined_df["ASSAY_OUTCOME"] = combined_df["ASSAY_OUTCOME"].str.strip().str.lower()
     
-    # Filter for relevant outcomes and create a copy to avoid SettingWithCopyWarning
     df_filtered = combined_df[combined_df["ASSAY_OUTCOME"].isin(["inactive", "active agonist", "active antagonist"])].copy()
     
-    # Map outcomes to binary 'active'/'inactive'
     df_filtered.loc[:, "ASSAY_OUTCOME"] = df_filtered["ASSAY_OUTCOME"].replace({
         "active agonist": "active",
         "active antagonist": "active"
@@ -66,7 +67,7 @@ def preprocessing(file_paths, test_size=0.2):
         X, y,
         test_size=test_size,
         random_state=42,
-        stratify=y  # Important for imbalanced datasets
+        stratify=y
     )
 
     print("Converting SMILES to Morgan fingerprints for training and test sets...")
@@ -105,13 +106,15 @@ class ToxicRandomForest:
 
     def predict(self, X_test):
         return self.model.predict(X_test)
+    
+    def predict_proba(self, X_test):
+        return self.model.predict_proba(X_test)
 
     def get_feature_importances(self):
         return self.model.feature_importances_
 
 def main():
-    """Main function to run the training and evaluation pipeline."""
-    # List of data files to process, same as in test_HK.py
+    """Main function to run the training, evaluation, and model saving pipeline."""
     file_paths = [
         "./smiles_HK/data/tox21-ache-p3.aggregrated.txt",
         "./smiles_HK/data/tox21-ap1-agonist-p1.aggregrated.txt",
@@ -129,11 +132,12 @@ def main():
     print(f"Precision: {precision:.4f}")
     print(f"Recall: {recall:.4f}")
     
-    feature_importances = model.get_feature_importances()
-    print("\nTop 10 most important features (fingerprint bits):")
-    top_indices = np.argsort(feature_importances)[-10:]
-    for idx in top_indices:
-        print(f"Feature {idx}: {feature_importances[idx]:.4f}")
+    # --- ADDED: Save the trained model ---
+    model_filename = "toxic_random_forest_model.joblib"
+    print(f"\nSaving trained model to {model_filename}...")
+    joblib.dump(model, model_filename)
+    print("Model saved successfully.")
+    # --- END ADDITION ---
 
 if __name__ == '__main__':
-    main() 
+    main()

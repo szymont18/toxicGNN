@@ -268,7 +268,7 @@ def main():
             }
 
     if best_state:
-        torch.save(best_state, "best_model.pth")
+        torch.save(best_state, "best_model_gnn_binary.pth")
         print(f"\nTraining complete. Saved best model from epoch {best_state['epoch']+1} (F1 Score: {best_f1:.4f}) to best_model.pth")
     else:
         print("\nTraining complete. No model was saved as no improvement was seen.")

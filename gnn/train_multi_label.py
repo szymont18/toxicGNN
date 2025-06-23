@@ -382,8 +382,8 @@ def main():
     print(f"\nTotal Training Time: {total_training_time:.2f} seconds")
 
     if best_state:
-        torch.save(best_state, "best_multilabel_model_new_format.pth")
-        print(f"\nTraining complete. Saved best model from epoch {best_state['epoch']+1} (F1 Score: {best_f1:.4f}) to 'best_multilabel_model_new_format.pth'")
+        torch.save(best_state, "best_multilabel_model_gnn.pth")
+        print(f"\nTraining complete. Saved best model from epoch {best_state['epoch']+1} (F1 Score: {best_f1:.4f}) to 'best_multilabel_model_gnn.pth'")
     else:
         print("\nTraining complete. No model was saved as no improvement was seen.")
 
